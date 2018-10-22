@@ -91,8 +91,15 @@ module Abilities
 
         Verification::Residence::GEOZONE_PROTECTIONS.each do |protection|
           if user.geozone_id != protection[:geozone_id] && protection[:action].present? && protection[:model_name].present? && protection[:model_id].present?
+              # cannot :vote, Budget, id: 4
               cannot protection[:action], protection[:model_name].constantize, id: protection[:model_id]
           end
+          if user.geozone_id?
+            if user.geozone.id == protection[:geozone_id] && protection[:action].present? && protection[:model_name].present? && protection[:model_id].present?
+               can :vote, protection[:model_id]
+            end
+          end
+
         end
       end
 
